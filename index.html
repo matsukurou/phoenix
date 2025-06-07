@@ -42,7 +42,7 @@
     }
 
     function sendToGoogleSheet(cardID, status) {
-      fetch("https://script.google.com/macros/s/AKfycbyr9jsFWjV6g6U8D97Kj7pT0f8c6-SHLnUv4cnO1igOhknU5lEzqnrG7C1xrVYdi55R/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbxEdQY_6n1mGz3GNmxYnpEabQcO8AQljWHVjl_4z_5IN95rY-CkPs1GO8t-dv5Qo_A4/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -68,7 +68,7 @@
     }
 
     // 履歴復元用: スプレッドシートからデータ取得
-    fetch("https://script.google.com/macros/s/AKfycbxLQSpWKjqiHArJOIAv7pM0LsCZATga98-tFb4LazmhIlc3YXCMRcJoZPtcx102FQuW/exec")
+    fetch("https://script.google.com/macros/s/AKfycbxEdQY_6n1mGz3GNmxYnpEabQcO8AQljWHVjl_4z_5IN95rY-CkPs1GO8t-dv5Qo_A4/exec")
       .then(res => res.json())
       .then(data => {
         data.forEach(entry => {
