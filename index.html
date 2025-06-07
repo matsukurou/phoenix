@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QRカード照合ツール（カメラ対応）</title>
+  <title>QRカード照合ツール（GAS連携）</title>
   <style>
     body { font-family: sans-serif; padding: 1em; }
     #reader { width: 100%; max-width: 400px; margin-top: 1em; }
@@ -15,8 +14,8 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール（カメラ対応）</h1>
-  <p>下のカメラを使ってQRコードを読み取ると、自動で照合します。</p>
+  <h1>QRカード照合ツール（カメラ対応 + GAS連携）</h1>
+  <p>カメラを使ってQRコードを読み取ると、自動で照合＆スプレッドシートに送信されます。</p>
 
   <div id="reader"></div>
 
@@ -42,12 +41,28 @@
         `<h2>未取得カード</h2><ul>${missing.map(c => `<li class='missing'>${c}</li>`).join('')}</ul>`;
     }
 
+    function sendToGoogleSheet(cardID, status) {
+      fetch("https://script.google.com/macros/s/AKfycbyr9jsFWjV6g6U8D97Kj7pT0f8c6-SHLnUv4cnO1igOhknU5lEzqnrG7C1xrVYdi55R/exec", { // ← ここをGASのデプロイURLに置き換えてください
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          card_id: cardID,
+          status: status,
+          timestamp: new Date().toISOString()
+        })
+      })
+      .then(res => console.log("送信成功", res))
+      .catch(err => console.error("送信失敗", err));
+    }
+
     function onScanSuccess(decodedText, decodedResult) {
       console.log(`Scanned: ${decodedText}`);
       const parts = decodedText.split("-");
       const cardID = parts.slice(1).join("-");
       scannedIDs.add(cardID);
+      const status = requiredCards.includes(cardID) ? "✔️" : "❌";
       updateDisplay();
+      sendToGoogleSheet(cardID, status);
     }
 
     const html5QrcodeScanner = new Html5QrcodeScanner(
