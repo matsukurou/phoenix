@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QRカード照合ツール（カメラ対応）</title>
+  <style>
+    body { font-family: sans-serif; padding: 1em; }
+    #reader { width: 100%; max-width: 400px; margin-top: 1em; }
+    .match { color: green; }
+    .missing { color: red; }
+    ul { padding-left: 1.2em; }
+  </style>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body>
+  <h1>QRカード照合ツール（カメラ対応）</h1>
+  <p>下のカメラを使ってQRコードを読み取ると、自動で照合します。</p>
+
+  <div id="reader"></div>
+
+  <div id="scanned-list"></div>
+  <div id="missing-list"></div>
+
+  <script>
+    const requiredCards = [
+      "アプリ-1", "スクリプト-50", "変更-1", "POS_UNIT-2",
+      "リードエンジニア-10", "リテール_オペ-1"
+    ];
+
+    const scannedIDs = new Set();
+
+    function updateDisplay() {
+      const matched = requiredCards.filter(card => scannedIDs.has(card));
+      const missing = requiredCards.filter(card => !scannedIDs.has(card));
+
+      document.getElementById("scanned-list").innerHTML =
+        `<h2>取得済みカード</h2><ul>${matched.map(c => `<li class='match'>${c}</li>`).join('')}</ul>`;
+
+      document.getElementById("missing-list").innerHTML =
+        `<h2>未取得カード</h2><ul>${missing.map(c => `<li class='missing'>${c}</li>`).join('')}</ul>`;
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+      console.log(`Scanned: ${decodedText}`);
+      const parts = decodedText.split("-");
+      const cardID = parts.slice(1).join("-");
+      scannedIDs.add(cardID);
+      updateDisplay();
+    }
+
+    const html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader", { fps: 10, qrbox: 250 }
+    );
+    html5QrcodeScanner.render(onScanSuccess);
+  </script>
+</body>
+</html>
