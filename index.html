@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QRカード照合ツール（Apps Script内ホスト用）</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QRカード照合ツール（GitHub Pages + GAS連携）</title>
   <style>
     body { font-family: sans-serif; padding: 1em; }
     #reader { width: 100%; max-width: 400px; margin-top: 1em; }
@@ -14,9 +14,7 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール2（カメラ対応 + GASホスト + 履歴復元）</h1>
-  <p>カメラを使ってQRコードを読み取ると、照合・送信・履歴復元がすべてApps Script内で動きます。</p>
-
+  <h1>QRカード照合ツール（GitHub Pages + GAS連携）</h1>
   <div id="reader"></div>
   <div id="scanned-list"></div>
   <div id="missing-list"></div>
@@ -26,8 +24,10 @@
       "アプリ-1", "スクリプト-50", "変更-1", "POS_UNIT-2",
       "リードエンジニア-10", "リテール_オペ-1"
     ];
-
     const scannedIDs = new Set();
+
+    const POST_URL = "https://script.google.com/macros/s/AKfycbxEdQY_6n1mGz3GNmxYnpEabQcO8AQljWHVjl_4z_5IN95rY-CkPs1GO8t-dv5Qo_A4/exec";
+    const GET_URL = POST_URL; // 同じでOK（doGetでJSON返すなら）
 
     function updateDisplay() {
       const matched = requiredCards.filter(card => scannedIDs.has(card));
@@ -41,11 +41,28 @@
     }
 
     function sendToGoogleSheet(cardID, status) {
-      google.script.run.withSuccessHandler(() => console.log("送信成功")).withFailureHandler(console.error)
-        .recordCard(cardID, status);
+      fetch(POST_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          card_id: cardID,
+          status: status,
+          timestamp: new Date().toISOString()
+        })
+      }).then(res => res.text()).then(console.log).catch(console.error);
     }
 
-    function onScanSuccess(decodedText, decodedResult) {
+    function loadScannedFromSheet() {
+      fetch(GET_URL)
+        .then(res => res.json())
+        .then(data => {
+          data.forEach(entry => scannedIDs.add(entry.card_id));
+          updateDisplay();
+        })
+        .catch(err => console.error("履歴取得失敗", err));
+    }
+
+    function onScanSuccess(decodedText) {
       const parts = decodedText.split("-");
       const cardID = parts.slice(1).join("-");
       if (!scannedIDs.has(cardID)) {
@@ -56,15 +73,7 @@
       }
     }
 
-    function loadScannedFromSheet() {
-      google.script.run.withSuccessHandler((data) => {
-        data.forEach(entry => scannedIDs.add(entry.card_id));
-        updateDisplay();
-      }).withFailureHandler(console.error).getScannedCards();
-    }
-
     loadScannedFromSheet();
-
     const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
     html5QrcodeScanner.render(onScanSuccess);
   </script>
