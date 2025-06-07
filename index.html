@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QRカード照合ツール（GAS連携）</title>
+  <title>QRカード照合ツール（GAS連携＋履歴復元）</title>
   <style>
     body { font-family: sans-serif; padding: 1em; }
     #reader { width: 100%; max-width: 400px; margin-top: 1em; }
@@ -14,8 +14,8 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール（カメラ対応 + GAS連携）</h1>
-  <p>カメラを使ってQRコードを読み取ると、自動で照合＆スプレッドシートに送信されます。</p>
+  <h1>QRカード照合ツール（カメラ対応 + GAS連携 + 履歴復元）</h1>
+  <p>カメラを使ってQRコードを読み取ると、照合＆スプレッドシートに送信され、次回起動時にも履歴が復元されます。</p>
 
   <div id="reader"></div>
 
@@ -42,7 +42,7 @@
     }
 
     function sendToGoogleSheet(cardID, status) {
-      fetch("https://script.google.com/macros/s/AKfycbyr9jsFWjV6g6U8D97Kj7pT0f8c6-SHLnUv4cnO1igOhknU5lEzqnrG7C1xrVYdi55R/exec", { // ← ここをGASのデプロイURLに置き換えてください
+      fetch("https://script.google.com/macros/s/AKfycbyr9jsFWjV6g6U8D97Kj7pT0f8c6-SHLnUv4cnO1igOhknU5lEzqnrG7C1xrVYdi55R/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -59,11 +59,24 @@
       console.log(`Scanned: ${decodedText}`);
       const parts = decodedText.split("-");
       const cardID = parts.slice(1).join("-");
-      scannedIDs.add(cardID);
-      const status = requiredCards.includes(cardID) ? "✔️" : "❌";
-      updateDisplay();
-      sendToGoogleSheet(cardID, status);
+      if (!scannedIDs.has(cardID)) {
+        scannedIDs.add(cardID);
+        const status = requiredCards.includes(cardID) ? "✔️" : "❌";
+        updateDisplay();
+        sendToGoogleSheet(cardID, status);
+      }
     }
+
+    // 履歴復元用: スプレッドシートからデータ取得
+    fetch("YOUR_GAS_GET_URL_HERE")
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(entry => {
+          scannedIDs.add(entry.card_id);
+        });
+        updateDisplay();
+      })
+      .catch(err => console.error("履歴の読み込み失敗", err));
 
     const html5QrcodeScanner = new Html5QrcodeScanner(
       "reader", { fps: 10, qrbox: 250 }
