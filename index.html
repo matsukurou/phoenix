@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QRカード照合ツール（ラウンド切替対応）</title>
+  <title>QRカード照合ツール（GitHub Pages + GAS連携）</title>
   <style>
     body { font-family: sans-serif; padding: 1em; }
     #reader { width: 100%; max-width: 400px; margin-top: 1em; }
@@ -15,16 +15,8 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール</h1>
+  <h1>QRカード照合ツール4</h1>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
-
-  <label for="round">ラウンド選択:</label>
-  <select id="round">
-    <option value="1">ラウンド 1</option>
-    <option value="2">ラウンド 2</option>
-    <option value="3">ラウンド 3</option>
-    <option value="3">ラウンド 3</option>
-  </select>
 
   <div id="reader"></div>
   <div id="message"></div>
@@ -58,20 +50,20 @@
     }
 
     function sendToGoogleSheet(cardID, status) {
-      const round = document.getElementById("round").value;
-
       fetch(POST_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        redirect: "follow",
+        headers: {
+          "Content-Type": "text/plain;charset=UTF-8"
+        },
         body: JSON.stringify({
           card_id: cardID,
           status: status,
-          round: round,
           timestamp: new Date().toISOString()
         })
       })
       .then(res => res.text())
-      .then(() => showMessage(`送信成功：${cardID}（ラウンド ${round}）`, "success"))
+      .then(() => showMessage(`送信成功：${cardID}`, "success"))
       .catch(err => {
         console.error(err);
         showMessage("送信エラー！QRを再読み取りしてください", "error");
