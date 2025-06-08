@@ -15,7 +15,7 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール8</h1>
+  <h1>QRカード照合ツール9</h1>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -37,7 +37,7 @@
       "リードエンジニア-10", "リテール_オペ-1"
     ];
 
-    const scannedIDs = new Set();
+    const scannedIDsByRound = {}; // ラウンド別に記録
     const POST_URL = "https://script.google.com/macros/s/AKfycbzMC6I8OabjV4GYUY_Xop7DWuh8vAMmnxoxuWTAIo2BwMIcjz0V2adGrm6J_aVyT1B2/exec"; // 差し替えてください
 
     function showMessage(text, type = "info") {
@@ -47,6 +47,8 @@
     }
 
     function updateDisplay() {
+      const round = document.getElementById("round").value;
+      const scannedIDs = scannedIDsByRound[round] || new Set();
       const matched = requiredCards.filter(card => scannedIDs.has(card));
       const missing = requiredCards.filter(card => !scannedIDs.has(card));
 
@@ -82,6 +84,12 @@
     }
 
     function onScanSuccess(decodedText) {
+      const round = document.getElementById("round").value;
+      if (!scannedIDsByRound[round]) {
+        scannedIDsByRound[round] = new Set();
+      }
+      const scannedIDs = scannedIDsByRound[round];
+      
       const parts = decodedText.split("-");
       const cardID = parts.slice(1).join("-");
       if (!scannedIDs.has(cardID)) {
