@@ -15,7 +15,7 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール9</h1>
+  <h1>QRカード照合ツール10</h1>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -31,7 +31,7 @@
   <div id="scanned-list"></div>
   <div id="missing-list"></div>
 
-  <script>
+  <script>    
     const requiredCards = [
       "アプリ-1", "スクリプト-50", "変更-1", "POS_UNIT-2",
       "リードエンジニア-10", "リテール_オペ-1"
@@ -61,6 +61,7 @@
 
     function sendToGoogleSheet(cardID, status) {
       const round = document.getElementById("round").value;
+      const info = cardInfoMap[cardID] || {};
       
       fetch(POST_URL, {
         method: "POST",
@@ -70,8 +71,10 @@
         },
         body: JSON.stringify({
           card_id: cardID,
-          status: status,
           round: round,
+          工数: info.工数 || "",
+          キャパシティ: info.キャパシティ || "",
+          大カテゴリー: info.大カテゴリー || "",
           timestamp: new Date().toISOString()
         })
       })
