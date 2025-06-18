@@ -94,8 +94,7 @@
       }
       const scannedIDs = scannedIDsByRound[round];
       
-      const parts = decodedText.split("-");
-      const cardID = parts.slice(1).join("-");
+      const cardID = decodedText.trim();
       if (!scannedIDs.has(cardID)) {
         scannedIDs.add(cardID);
         const status = requiredCards.includes(cardID) ? "✔️" : "❌";
