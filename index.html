@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール13</h1>
+  <h1>QRカード照合ツール14</h1>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -32,12 +32,7 @@
   <div id="scanned-list"></div>
   <div id="missing-list"></div>
 
-  <script>    
-    const requiredCards = [
-      "アプリ-1", "スクリプト-50", "変更-1", "POS_UNIT-2",
-      "リードエンジニア-10", "リテール_オペ-1"
-    ];
-
+  <script>
     const scannedIDsByRound = {}; // ラウンド別に記録
     const POST_URL = "https://script.google.com/macros/s/AKfycbzMC6I8OabjV4GYUY_Xop7DWuh8vAMmnxoxuWTAIo2BwMIcjz0V2adGrm6J_aVyT1B2/exec"; // 差し替えてください
 
@@ -50,14 +45,6 @@
     function updateDisplay() {
       const round = document.getElementById("round").value;
       const scannedIDs = scannedIDsByRound[round] || new Set();
-      const matched = requiredCards.filter(card => scannedIDs.has(card));
-      const missing = requiredCards.filter(card => !scannedIDs.has(card));
-
-      document.getElementById("scanned-list").innerHTML =
-        `<h2>取得済みカード</h2><ul>${matched.map(c => `<li class='match'>${c}</li>`).join('')}</ul>`;
-
-      document.getElementById("missing-list").innerHTML =
-        `<h2>未取得カード</h2><ul>${missing.map(c => `<li class='missing'>${c}</li>`).join('')}</ul>`;
     }
 
     function sendToGoogleSheet(cardID, status) {
