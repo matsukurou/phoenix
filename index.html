@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール12</h1>
+  <h1>QRカード照合ツール13</h1>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -74,7 +74,7 @@
           card_id: cardID,
           round: round,
           工数: info.工数 || "",
-          キャパシティ: info.キャパシティ || "",
+          キャパシティ対象: info.キャパシティ対象 || "",
           大カテゴリー: info.大カテゴリー || "",
           timestamp: new Date().toISOString()
         })
