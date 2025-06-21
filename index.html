@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール14</h1>
+  <h1>QRカード照合ツール15</h1>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -28,9 +28,8 @@
   </select>
 
   <div id="reader"></div>
+  <button id="reset-btn">このラウンドの読み取り履歴をリセット</button>
   <div id="message"></div>
-  <div id="scanned-list"></div>
-  <div id="missing-list"></div>
 
   <script>
     const scannedIDsByRound = {}; // ラウンド別に記録
@@ -89,6 +88,12 @@
         sendToGoogleSheet(cardID, status);
       }
     }
+
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      const round = document.getElementById("round").value;
+      scannedIDsByRound[round] = new Set();
+      showMessage(`ラウンド${round}の読み取り履歴をリセットしました`, "info");
+    });
 
     const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
     html5QrcodeScanner.render(onScanSuccess);
