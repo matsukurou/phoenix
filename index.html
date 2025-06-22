@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール22</h1>
+  <h1>QRカード照合ツール23</h1>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -50,7 +50,7 @@
       const round = document.getElementById("round").value;
       const info = cardInfoMap[cardID] || {};
 
-      showMessage(`送信予定:${cardID}:${info.キャパシティ対象}`, "info");
+      showMessage(`送信中:${cardID}`, "info");
       
       fetch(POST_URL, {
         method: "POST",
