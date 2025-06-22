@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール25</h1>
+  <h2>QRカード照合ツール26</h2>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -96,7 +96,7 @@
       const round = document.getElementById("round").value;
       scannedIDsByRound[round] = new Set();
       showMessage(`ラウンド${round}の読み取り履歴をリセットしました`, "info", "message-sending");
-      showMessage(``, "info", "message-sent");
+      showMessage(`送信完了状況`, "info", "message-sent");
     });
 
     const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
