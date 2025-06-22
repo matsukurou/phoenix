@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール17</h1>
+  <h1>QRカード照合ツール18</h1>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -78,6 +78,7 @@
     }
 
     function onScanSuccess(decodedText) {
+      showMessage(`デコード`, "info");
       const round = document.getElementById("round").value;
       if (!scannedIDsByRound[round]) {
         scannedIDsByRound[round] = new Set();
@@ -86,6 +87,7 @@
       
       const cardID = decodedText.trim();
       if (!scannedIDs.has(cardID)) {
+         showMessage(`読み込みカード：${cardID}`, "info");
         scannedIDs.add(cardID);
         const status = requiredCards.includes(cardID) ? "✔️" : "❌";
         updateDisplay();
