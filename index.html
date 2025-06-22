@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h1>QRカード照合ツール23</h1>
+  <h1>QRカード照合ツール24</h1>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -29,14 +29,15 @@
 
   <div id="reader"></div>
   <button id="reset-btn">このラウンドの読み取り履歴をリセット</button>
-  <div id="message"></div>
+  <div id="message-sending"></div>
+  <div id="message-sent"></div>
 
   <script>
     const scannedIDsByRound = {}; // ラウンド別に記録
     const POST_URL = "https://script.google.com/macros/s/AKfycbzMC6I8OabjV4GYUY_Xop7DWuh8vAMmnxoxuWTAIo2BwMIcjz0V2adGrm6J_aVyT1B2/exec"; // 差し替えてください
 
-    function showMessage(text, type = "info") {
-      const msgEl = document.getElementById("message");
+    function showMessage(text, type = "info", sendStatus = "sending") {
+      const msgEl = document.getElementById(sendStatus);
       msgEl.textContent = text;
       msgEl.style.color = type === "success" ? "green" : type === "error" ? "red" : "black";
     }
@@ -50,7 +51,7 @@
       const round = document.getElementById("round").value;
       const info = cardInfoMap[cardID] || {};
 
-      showMessage(`送信中:${cardID}`, "info");
+      showMessage(`送信中:${cardID}`, "info", "message-sending");
       
       fetch(POST_URL, {
         method: "POST",
@@ -68,10 +69,10 @@
         })
       })
       .then(res => res.text())
-      .then(() => showMessage(`送信成功：${cardID}`, "success"))
+      .then(() => showMessage(`送信成功：${cardID}`, "success", "message-sent"))
       .catch(err => {
         console.error(err);
-        showMessage("送信エラー！QRを再読み取りしてください", "error");
+        showMessage("送信エラー！QRを再読み取りしてください", "error", "message-sent");
       });
     }
 
@@ -84,7 +85,6 @@
       
       const cardID = decodedText.trim();
       if (!scannedIDs.has(cardID)) {
-         showMessage(`読み込みカード：${cardID}`, "info");
         scannedIDs.add(cardID);
         updateDisplay();
         sendToGoogleSheet(cardID, status);
@@ -94,7 +94,8 @@
     document.getElementById("reset-btn").addEventListener("click", () => {
       const round = document.getElementById("round").value;
       scannedIDsByRound[round] = new Set();
-      showMessage(`ラウンド${round}の読み取り履歴をリセットしました`, "info");
+      showMessage(`ラウンド${round}の読み取り履歴をリセットしました`, "info", "message-sending");
+      showMessage(``, "info", "message-sent");
     });
 
     const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
