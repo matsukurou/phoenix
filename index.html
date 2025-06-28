@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h2>QRカード照合ツール31</h2>
+  <h2>QRカード照合ツール32</h2>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -118,7 +118,7 @@
 
       const payload = {
         round: round,
-        timestamp: getJapanTimestamp(),
+        timestamp: new Date().toISOString(),
         cards: cards
       };
 
