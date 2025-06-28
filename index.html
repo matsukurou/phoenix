@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h2>QRカード照合ツール28</h2>
+  <h2>QRカード照合ツール29</h2>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -98,9 +98,10 @@
       const scannedIDs = scannedIDsByRound[round] ? Array.from(scannedIDsByRound[round]) : [];
 
       if (scannedIDs.length === 0) {
-        showMessage("送信するデータがありません", "info");
+        showMessage("送信するデータがありません", "info", "message-sent");
         return;
       }
+      showMessage("カード一覧解析", "info", "message-sent");
 
       const cards = scannedIDs.map(cardID => {
         const info = cardInfoMap[cardID] || {};
@@ -117,6 +118,8 @@
         timestamp: getJapanTimestamp(),
         cards: cards
       };
+
+      showMessage("送信しています", "info", "message-sent");
 
       fetch(POST_URL, {
         method: "POST",
