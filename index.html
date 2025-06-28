@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h2>QRカード照合ツール29</h2>
+  <h2>QRカード照合ツール30</h2>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -104,12 +104,12 @@
       showMessage("カード一覧解析", "info", "message-sent");
 
       const cards = scannedIDs.map(cardID => {
-        const info = cardInfoMap[cardID] || {};
+        const info = cardInfoMap[cardID];
         return {
           card_id: cardID,
-          工数: info.工数 || "",
-          キャパシティ対象: info.キャパシティ || "",
-          大カテゴリー: info.大カテゴリー || ""
+          工数: info.工数,
+          キャパシティ対象: info.キャパシティ,
+          大カテゴリー: info.大カテゴリー,
         };
       });
 
