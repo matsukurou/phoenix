@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h2>QRカード照合ツール43</h2>
+  <h2>QRカード照合ツール44</h2>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -38,17 +38,18 @@
     const scannedIDsByRound = {}; // ラウンド別に記録
     const POST_URL = "https://script.google.com/macros/s/AKfycbzMC6I8OabjV4GYUY_Xop7DWuh8vAMmnxoxuWTAIo2BwMIcjz0V2adGrm6J_aVyT1B2/exec"; // 差し替えてください
 
-    function showMessage(text, type = "info", sendStatus = "sending") {
+    function showMessage(text, type = "info", sendStatus = "message-sending") {
       const msgEl = document.getElementById(sendStatus);
       msgEl.textContent = text;
       msgEl.style.color = type === "success" ? "green" : type === "error" ? "red" : "black";
     }
 
     function updateDisplay() {
-      const round = document.getElementById("round").value;
-      const scannedIDs = scannedIDsByRound[round] || new Set();
+      // const round = document.getElementById("round").value;
+      // const scannedIDs = scannedIDsByRound[round] || new Set();
     }
 
+    // 都度送信
     function sendToGoogleSheet(cardID, status) {
       const round = document.getElementById("round").value;
       const info = cardInfoMap[cardID] || {};
@@ -78,6 +79,7 @@
       });
     }
 
+    // スキャン成功時
     function onScanSuccess(decodedText) {
       const round = document.getElementById("round").value;
       if (!scannedIDsByRound[round]) {
@@ -93,6 +95,7 @@
       }
     }
 
+    // 一括送信ボタンが押された
     document.getElementById("send-bulk").addEventListener("click", () => {
       const round = document.getElementById("round").value;
       const scannedIDs = scannedIDsByRound[round] ? Array.from(scannedIDsByRound[round]) : [];
