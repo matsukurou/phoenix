@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h2>QRカード照合ツール42</h2>
+  <h2>QRカード照合ツール43</h2>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -132,7 +132,7 @@
       })
       .then(res => res.text())
       .then(() => {
-        showMessage(`ラウンド${round}の一括送信成功`, "success");
+        showMessage(`ラウンド${round}の一括送信成功`, "success", "message-sent");
         //scannedIDsByRound[round] = new Set(); // 送信後にクリア（任意）
       })
       .catch(err => {
