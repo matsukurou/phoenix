@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h2>QRカード照合ツール26</h2>
+  <h2>QRカード照合ツール27</h2>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -27,6 +27,7 @@
     <option value="4">ラウンド 4</option>
   </select>
 
+  <button id="send-bulk">一括送信</button>
   <div id="message-sending">"送信状況"</div>
   <div id="message-sent">"送信完了状況"</div>
 
@@ -91,6 +92,48 @@
         sendToGoogleSheet(cardID, status);
       }
     }
+
+    document.getElementById("send-bulk").addEventListener("click", () => {
+      const round = document.getElementById("round").value;
+      const scannedIDs = scannedIDsByRound[round] ? Array.from(scannedIDsByRound[round]) : [];
+
+      if (scannedIDs.length === 0) {
+        showMessage("送信するデータがありません", "info");
+        return;
+      }
+
+      const cards = scannedIDs.map(cardID => {
+        const info = cardInfoMap[cardID] || {};
+        return {
+          card_id: cardID,
+          工数: info.工数 || "",
+          キャパシティ対象: info.キャパシティ || "",
+          大カテゴリー: info.大カテゴリー || ""
+        };
+      });
+
+      const payload = {
+        round: round,
+        timestamp: getJapanTimestamp(),
+        cards: cards
+      };
+
+      fetch(POST_URL, {
+        method: "POST",
+        redirect: "follow",
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.text())
+      .then(() => {
+        showMessage(`ラウンド${round}の一括送信成功`, "success");
+        //scannedIDsByRound[round] = new Set(); // 送信後にクリア（任意）
+      })
+      .catch(err => {
+        console.error(err);
+        showMessage("一括送信失敗", "error");
+      });
+    });
 
     document.getElementById("reset-btn").addEventListener("click", () => {
       const round = document.getElementById("round").value;
