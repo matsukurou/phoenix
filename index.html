@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h2>QRカード照合ツール41</h2>
+  <h2>QRカード照合ツール42</h2>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -109,7 +109,7 @@
         return {
           card_id: cardID,
           工数: info.工数,
-          キャパシティ対象: info.キャパシティ,
+          キャパシティ対象: info.キャパシティ対象,
           大カテゴリー: info.大カテゴリー,
         };
       });
@@ -123,25 +123,6 @@
       };
 
       showMessage(`送信しています`, "info", "message-sent");
-
-//       const testData = {
-//   round: "2",
-//   timestamp: "2025-06-08 18:30:00",
-//   cards: [
-//     {
-//       card_id: "アプリ-1",
-//       工数: 4,
-//       キャパシティ対象: "アプリ開発",
-//       大カテゴリー: "プロジェクト"
-//     },
-//     {
-//       card_id: "スクリプト-5",
-//       工数: 2,
-//       キャパシティ対象: "ITサポート",
-//       大カテゴリー: "機能"
-//     }
-//   ]
-// };
 
       fetch(POST_URL, {
         method: "POST",
