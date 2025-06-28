@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h2>QRカード照合ツール27</h2>
+  <h2>QRカード照合ツール28</h2>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -55,27 +55,27 @@
 
       showMessage(`送信中:${cardID}`, "info", "message-sending");
       
-      fetch(POST_URL, {
-        method: "POST",
-        redirect: "follow",
-        headers: {
-          "Content-Type": "text/plain;charset=UTF-8"
-        },
-        body: JSON.stringify({
-          card_id: cardID,
-          round: round,
-          工数: info.工数 || "",
-          キャパシティ対象: info.キャパシティ対象 || "",
-          大カテゴリー: info.大カテゴリー || "",
-          timestamp: new Date().toISOString()
-        })
-      })
-      .then(res => res.text())
-      .then(() => showMessage(`送信成功：${cardID}`, "success", "message-sent"))
-      .catch(err => {
-        console.error(err);
-        showMessage("送信エラー！QRを再読み取りしてください", "error", "message-sent");
-      });
+      // fetch(POST_URL, {
+      //   method: "POST",
+      //   redirect: "follow",
+      //   headers: {
+      //     "Content-Type": "text/plain;charset=UTF-8"
+      //   },
+      //   body: JSON.stringify({
+      //     card_id: cardID,
+      //     round: round,
+      //     工数: info.工数 || "",
+      //     キャパシティ対象: info.キャパシティ対象 || "",
+      //     大カテゴリー: info.大カテゴリー || "",
+      //     timestamp: new Date().toISOString()
+      //   })
+      // })
+      // .then(res => res.text())
+      // .then(() => showMessage(`送信成功：${cardID}`, "success", "message-sent"))
+      // .catch(err => {
+      //   console.error(err);
+      //   showMessage("送信エラー！QRを再読み取りしてください", "error", "message-sent");
+      // });
     }
 
     function onScanSuccess(decodedText) {
