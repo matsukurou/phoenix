@@ -16,7 +16,7 @@
   <script src="cardInfoMap.js"></script>
 </head>
 <body>
-  <h2>QRカード照合ツール39</h2>
+  <h2>QRカード照合ツール40</h2>
   <p>スマホでQRコードを読み取ると、スプレッドシートに記録されます。</p>
 
   <label for="round">ラウンド選択:</label>
@@ -146,7 +146,7 @@
       fetch(POST_URL, {
         method: "POST",
         redirect: "follow",
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        headers: { "Content-Type": "text/plain;charset=UTF-8" },
         body: JSON.stringify(testData)
       })
       .then(res => res.text())
