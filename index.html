@@ -91,7 +91,7 @@
       if (!scannedIDs.has(cardID)) {
         scannedIDs.add(cardID);
         updateDisplay();
-        sendToGoogleSheet(cardID, status);
+        showMessage(`読み取り成功：${cardID}`, "success", "message-sending");
       }
     }
 
@@ -107,13 +107,13 @@
       showMessage("カード一覧解析", "info", "message-sent");
 
       const cards = scannedIDs.map(cardID => {
-        const info = cardInfoMap[cardID];
+        const info = cardInfoMap[cardID] || {};
         showMessage("cardID", "info", "message-sent");
         return {
           card_id: cardID,
-          工数: info.工数,
-          キャパシティ対象: info.キャパシティ対象,
-          大カテゴリー: info.大カテゴリー,
+          工数: info.工数 ?? "",
+          キャパシティ対象: info.キャパシティ対象 ?? "",
+          大カテゴリー: info.大カテゴリー ?? "",
         };
       });
 
@@ -161,8 +161,8 @@
         }
       },
       false
-);
-    html5QrcodeScanner.render(onScanSuccess);
+    );
+    scanner.render(onScanSuccess);
   </script>
 </body>
 </html>
